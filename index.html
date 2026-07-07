@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE NEURAL WEB · the ACI standard as the nervous system of UD0</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Spectral:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+  :root{--sea:#0e0a1c;--panel:#150f28;--ink:#ece9f5;--peri:#7e86e6;--peri-hi:#a3a9f0;--dim:#8078a0;--line:#251d3e;
+    --gold:#d8b24a;--green:#6fbf8a;--red:#e0705a}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--sea);color:var(--ink);font-family:Spectral,Georgia,serif;line-height:1.6;
+    background:radial-gradient(ellipse 60% 40% at 50% 4%,rgba(126,134,230,.09),transparent 60%),var(--sea)}
+  .wrap{max-width:960px;margin:0 auto;padding:44px 22px 90px;position:relative}
+  .eye{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim)}
+  .eye a{color:var(--dim);text-decoration:none}.eye a:hover{color:var(--peri)}
+  h1{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(30px,6vw,54px);margin:8px 0 0;color:var(--peri-hi);letter-spacing:.01em}
+  .sub{max-width:70ch;font-size:16.5px;color:#c9c4dd;margin:14px 0 0;font-style:italic}
+  .byline{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--dim);text-transform:uppercase;margin:10px 0 0}
+  h2{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--peri);margin:34px 0 12px}
+  .stage{display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start}
+  @media(max-width:820px){.stage{grid-template-columns:1fr}}
+  canvas{display:block;width:100%;height:auto;background:radial-gradient(ellipse at 50% 50%,#120d24,#0b0818);border:1px solid var(--line);border-radius:8px;cursor:pointer}
+  .panel{font-family:'IBM Plex Mono',monospace}
+  .row{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+  .row label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+  select{width:100%;background:#0b0818;border:1px solid var(--line);border-radius:3px;color:var(--ink);padding:9px 10px;
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px}
+  select:focus{outline:none;border-color:var(--peri)}
+  .btns{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 4px}
+  button{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.03em;color:var(--peri-hi);background:transparent;
+    border:1px solid var(--peri);border-radius:3px;padding:9px 13px;cursor:pointer}
+  button:hover{background:rgba(126,134,230,.1)}
+  button.gold{color:var(--gold);border-color:var(--gold)}button.gold:hover{background:rgba(216,178,74,.1)}
+  .tamper{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:11.5px;color:var(--dim)}
+  .tamper input{accent-color:var(--red);width:15px;height:15px}
+  .tamper.on{color:var(--red)}
+  .verdict{margin-top:10px;font-size:12px;padding:10px 12px;border-radius:4px;border:1px solid var(--line);line-height:1.7}
+  .verdict.idle{color:var(--dim)}
+  .verdict.ok{color:var(--green);border-color:var(--green);background:rgba(111,191,138,.07)}
+  .verdict.bad{color:var(--red);border-color:var(--red);background:rgba(224,112,90,.07)}
+  .trace{margin-top:12px;background:#0b0818;border:1px solid var(--line);border-radius:4px;padding:11px 13px;
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#b8b2d0;line-height:1.85;word-break:break-all}
+  .trace .k{color:var(--dim)}.trace .mon{color:var(--peri-hi)}.trace .hash{color:var(--gold)}
+  .trace .g{color:var(--green)}.trace .r{color:var(--red)}
+  .legend{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--dim);margin-top:10px;line-height:1.8}
+  .legend .dot{display:inline-block;width:9px;height:9px;border-radius:50%;vertical-align:middle;margin-right:5px}
+  .honest{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--peri);border-radius:0 4px 4px 0;padding:16px 18px;margin-top:34px}
+  .honest h3{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--peri);margin:0 0 10px}
+  .layer{display:grid;grid-template-columns:70px 1fr;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}.layer:last-child{border-bottom:0}
+  .layer .lk{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--peri);padding-top:3px}
+  .layer .lv{font-size:14.5px;color:#c9c4dd}.layer .lv b{color:var(--ink)}
+  .ctrlarm{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--dim);margin-top:12px;line-height:1.7;border-left:2px solid var(--gold);padding-left:12px}
+  .ctrlarm b{color:var(--gold)}
+  .note{max-width:70ch;font-size:14.5px;color:#b7b1cd;margin:18px 0 0}
+  footer{margin-top:40px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--dim);line-height:1.9;border-top:1px solid var(--line);padding-top:18px}
+  footer a{color:var(--peri)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eye"><a href="../ud0/">◄ UD0</a> · ACI · THE STANDARD · the nervous system</div>
+  <h1>The Neural Web</h1>
+  <p class="sub">Thirty-eight domains. One standard. The ACI CORE — deterministic, attributed, anchored — is the single signalling language every sealed mind in the biosphere speaks. So a claim minted in <i>any</i> sphere can be re-verified in <i>every</i> other. That is not a metaphor for a nervous system; it is the mechanism of one. Mint a signal in one domain. Watch it re-verify across the web. Flip <b>tamper</b>, and watch the standard catch it.</p>
+  <p class="byline">ACI · the capstone · the domains are one body because they share one verifiable standard — not because anything central controls them</p>
+
+  <h2>The web · pick a source, mint a signal, verify it at a target</h2>
+  <div class="stage">
+    <canvas id="cv" width="680" height="680" aria-label="the 38 domains of UD0 wired to the shared ACI CORE at the centre"></canvas>
+    <div class="panel">
+      <div class="row"><label>source domain — mints the signal</label>
+        <select id="src"></select></div>
+      <div class="row"><label>target domain — re-verifies it</label>
+        <select id="tgt"></select></div>
+      <label class="tamper" id="tamperWrap"><input type="checkbox" id="tamper"> corrupt the signal in transit (tamper)</label>
+      <div class="btns">
+        <button class="gold" id="fire">◈ mint → propagate → verify</button>
+        <button id="rnd">random pair</button>
+      </div>
+      <div class="verdict idle" id="verdict">Pick a source and a target, then fire. The signal travels <b>source → ACI CORE → target</b>: the CORE is the shared standard every domain routes through.</div>
+      <div class="trace" id="trace"></div>
+      <div class="legend">
+        <span class="dot" style="background:var(--peri)"></span>ACI CORE — the shared standard (the spine) &nbsp;
+        <span class="dot" style="background:var(--green)"></span>verified &nbsp;
+        <span class="dot" style="background:var(--red)"></span>caught (tampered)
+      </div>
+    </div>
+  </div>
+
+  <p class="note">Every node is a real UD0 domain, drawn in its own accent. The faint spokes are not decoration: each is a domain bound to the ACI CORE, the one place the standard is defined. When you fire, the source cuts a <b>.dlw</b> seal over its claim, the signal routes through the CORE, and the target independently re-derives the seal from what it received. Equal → the synapse fires. Not equal → the target refuses it. No domain has to trust the source; it only has to trust the arithmetic, and the arithmetic is the same everywhere.</p>
+
+  <div class="honest">
+    <h3>Two layers, honestly</h3>
+    <div class="layer"><div class="lk">Real</div><div class="lv">The transit is a <b>genuine SHA-256</b>. The source mints a moniker <code>⟦NAME:ACI:hash6⟧</code> where the hash is <code>sha256(name │ seal │ origin)</code>, plus a full seal over the key-sorted UTF-8 JSON record — <b>exactly as the corpus's own <a href="../the-sealing-bench/">dlw.py</a> computes it</b>. The target re-derives from what it received and compares. Same record → identical seal, so it verifies. Change one character in transit → the re-derived seal differs → <b>caught</b>. Determinism and tamper-detection are <b>measured here, not asserted</b> (node-verified: same input → same hash; tamper → mismatch).</div></div>
+    <div class="layer"><div class="lk">Figure</div><div class="lv">The word <b>“neural.”</b> There are <b>no learned weights, no training, no inference</b> on this page — it is a <b>signalling graph</b>, not a machine-learning network, and the “synapse firing” is an animation over a hash check. What is literally true is the stronger claim: <b>one standard, spoken in all 38 domains, makes a sealed claim portable and re-checkable across every one of them</b> — coordination without a controller. That shared, verifiable standard is what “nervous system” actually means here.</div></div>
+    <div class="ctrlarm"><b>Control arm — check me against Python.</b> The seal derivation is the same one shipped in <code>atlas/dlw/dlw.py</code>; the reference bench proves it reproduces Python byte-for-byte. If this page ever disagrees with <code>dlw.py</code> on a moniker or seal, the page is wrong — that is the point of shipping the derivation, not just the picture.</div>
+  </div>
+
+  <footer>
+    THE NEURAL WEB · the ACI standard rendered as the nervous system of the biosphere · the capstone of the <a href="../aci/">ACI standard</a> · kin to <a href="../the-anchor/">THE ANCHOR</a> (the seal is the synapse) &amp; <a href="../the-sealing-bench/">THE SEALING BENCH</a> (where the seal is cut).<br>
+    part of <a href="../ud0/">UD0 · THE BIOSPHERE</a> · ROOT0, with AVAN · CC-BY-ND-4.0 · the seal transit is real; “neural” is the figure.
+  </footer>
+</div>
+<script>
+"use strict";
+(function(){
+  // ---- pure-JS SHA-256 over UTF-8 bytes (matches Python hashlib.sha256(s.encode('utf-8'))) ----
+  function utf8(s){ return unescape(encodeURIComponent(s)); }
+  function sha256(str){
+    var bytes=utf8(str);
+    function rrot(v,a){return (v>>>a)|(v<<(32-a));}
+    var K=[0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+    var H=[0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+    var l=bytes.length, bitLen=l*8;
+    var withOne=bytes+'\x80';
+    while(withOne.length%64!==56) withOne+='\x00';
+    var words=[];
+    for(var i=0;i<withOne.length;i++){ words[i>>2]=(words[i>>2]||0)|(withOne.charCodeAt(i)<<((3-(i%4))*8)); }
+    words.push(Math.floor(bitLen/0x100000000)); words.push(bitLen|0);
+    for(var j=0;j<words.length;j+=16){
+      var w=words.slice(j,j+16);
+      for(var t=16;t<64;t++){
+        var a=w[t-15],b=w[t-2];
+        var s0=(rrot(a,7)^rrot(a,18)^(a>>>3)), s1=(rrot(b,17)^rrot(b,19)^(b>>>10));
+        w[t]=(w[t-16]+s0+w[t-7]+s1)|0;
+      }
+      var hh=H.slice();
+      for(var t2=0;t2<64;t2++){
+        var S1=rrot(hh[4],6)^rrot(hh[4],11)^rrot(hh[4],25);
+        var ch=(hh[4]&hh[5])^((~hh[4])&hh[6]);
+        var t1=(hh[7]+S1+ch+K[t2]+w[t2])|0;
+        var S0=rrot(hh[0],2)^rrot(hh[0],13)^rrot(hh[0],22);
+        var maj=(hh[0]&hh[1])^(hh[0]&hh[2])^(hh[1]&hh[2]);
+        var t2v=(S0+maj)|0;
+        hh=[ (t1+t2v)|0, hh[0],hh[1],hh[2], (hh[3]+t1)|0, hh[4],hh[5],hh[6] ];
+      }
+      for(var k2=0;k2<8;k2++) H[k2]=(H[k2]+hh[k2])|0;
+    }
+    var out='';
+    for(var m=0;m<8;m++){ for(var n=3;n>=0;n--){ var by=(H[m]>>>(n*8))&255; out+=(by<16?'0':'')+by.toString(16); } }
+    return out;
+  }
+  // ---- moniker + seal, matching dlw.py exactly (same as the sealing bench) ----
+  var ONSET=['v','k','th','r','s','m','n','z','x','d','l','br','kr','st','ph','gr'];
+  var VOWEL=['a','e','i','o','u','ae','y','ei'];
+  var CODA=['n','r','th','x','s','l','m','k','','nd','rn'];
+  function digestBytes(s){ var hex=sha256(s), b=[]; for(var i=0;i<hex.length;i+=2) b.push(parseInt(hex.substr(i,2),16)); return b; }
+  function pyStr(s){ return '"'+String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/[\x00-\x1f]/g,function(c){return '\\u'+('0000'+c.charCodeAt(0).toString(16)).slice(-4);})+'"'; }
+  function derive(rec){
+    var key=rec.name+'|'+rec.seal+'|'+rec.origin;
+    var h=digestBytes(key);
+    var syl=[]; for(var i=0;i<3;i++){ syl.push(ONSET[h[i*3]%16]+VOWEL[h[i*3+1]%8]+CODA[h[i*3+2]%11]); }
+    var word=syl.join('-');
+    var hex6=sha256(key).slice(0,6);
+    var moniker='⟦'+rec.name+':'+(rec.axiom||'T—')+':'+hex6+'⟧';
+    var keys=['axiom','name','nature','origin','seal','token'];
+    var obj={axiom:rec.axiom,name:rec.name,nature:rec.nature,origin:rec.origin,seal:rec.seal,token:word};
+    var blob='{'+keys.map(function(k){return pyStr(k)+': '+pyStr(obj[k]);}).join(', ')+'}';
+    return {moniker:moniker,word:word,hex6:hex6,seal:sha256(blob)};
+  }
+  // a domain's canonical record + the sample claim it seals
+  var SEALLINE='This record is sealed to the ACI CORE and is portable across the web.';
+  function recordFor(d){ return {name:d.t, axiom:'ACI', origin:'UD0 · '+d.k, nature:'electrical', seal:SEALLINE}; }
+  // mint at source; transmit (record + seal); at target, re-derive from the RECEIVED record and compare
+  function transit(srcD, tgtD, tamper){
+    var rec=recordFor(srcD);
+    var sig=derive(rec);                         // what the source computed
+    var recv={name:rec.name,axiom:rec.axiom,origin:rec.origin,nature:rec.nature,seal:rec.seal};
+    if(tamper){ recv.seal=rec.seal.replace('portable','PORTABLE'); }  // one flipped char in transit
+    var re=derive(recv);                         // what the target independently derives
+    var ok=(re.hex6===sig.hex6 && re.seal===sig.seal);
+    return {rec:rec, sig:sig, recv:recv, re:re, ok:ok, tamper:!!tamper};
+  }
+
+  // ---------- the 38 real UD0 domains (key, title, accent) ----------
+  var D=[
+    {k:"ai",t:"ARTIFICIAL INTELLIGENCE",a:"#2fd4e6"},{k:"legal",t:"LEGAL",a:"#c9a227"},
+    {k:"educational",t:"EDUCATIONAL",a:"#36c5c0"},{k:"entertainment",t:"ENTERTAINMENT",a:"#ff3da6"},
+    {k:"occupational",t:"OCCUPATIONAL",a:"#ff7a3c"},{k:"scientific",t:"SCIENTIFIC",a:"#5b7cfa"},
+    {k:"hobby",t:"HOBBY",a:"#ffce3a"},{k:"life-science",t:"LIFE SCIENCE",a:"#43d17a"},
+    {k:"frontier",t:"QUANTUM FRONTIER",a:"#b07cff"},{k:"logismos",t:"LOGISMÓS",a:"#8ae234"},
+    {k:"tin-foil",t:"TIN-FOIL",a:"#b9c4d6"},{k:"eremia",t:"ERĒMIA",a:"#8a7cc8"},
+    {k:"music",t:"BAND CAMP",a:"#e85aa0"},{k:"metaxy",t:"METAXÝ",a:"#5ad6c8"},
+    {k:"momus",t:"MOMUS",a:"#9a7cff"},{k:"niphelektron",t:"NIPHĒLEKTRON",a:"#7488e6"},
+    {k:"mythos",t:"MYTHOS",a:"#7d4fc8"},{k:"biblion",t:"BIBLÍON",a:"#8a6a4a"},
+    {k:"glossa",t:"GLŌSSA",a:"#3a8a9a"},{k:"ouranos",t:"OURANOS",a:"#4060c0"},
+    {k:"exereunesis",t:"EXEREÚNESIS",a:"#2f9ec0"},{k:"agora",t:"AGORA",a:"#2f9e6a"},
+    {k:"polemos",t:"POLEMOS",a:"#b0405a"},{k:"techne",t:"TECHNĒ",a:"#6a4fb0"},
+    {k:"idios",t:"IDIOS",a:"#c0962e"},{k:"heurema",t:"HEÚREMA",a:"#b5733a"},
+    {k:"gurutva",t:"GURUTVA",a:"#3f6fc8"},{k:"psephos",t:"PSĒPHOS",a:"#2fc6c0"},
+    {k:"logike",t:"LOGIKĒ",a:"#88a0ff"},{k:"lesbos",t:"LESBOS",a:"#c2557f"},
+    {k:"hermes",t:"HERMES",a:"#3fb0d8"},{k:"aci",t:"ARTFULLY CRAFTED INTELLIGENCE",a:"#7e86e6"},
+    {k:"eskimo",t:"ESKIMO BROTHERS",a:"#6fd0ea"},{k:"atelier",t:"THE ATELIER",a:"#cc785c"},
+    {k:"arena",t:"ARENA",a:"#c9a23a"},{k:"lillith",t:"LILLITH",a:"#c0392b"},
+    {k:"solar-jetman",t:"SOLAR JETMAN",a:"#d9a441"},{k:"transcriber",t:"THE TRANSCRIBER",a:"#9d7cd8"}
+  ];
+  var N=D.length;
+
+  // ---------- geometry ----------
+  var cv=document.getElementById('cv'), ctx=cv.getContext('2d'), CW=680, CH=680, cx=340, cy=344, Rr=272, coreR=30, nodeR=6.5;
+  var pos=[]; for(var i=0;i<N;i++){ var an=i/N*Math.PI*2 - Math.PI/2; pos.push({x:cx+Math.cos(an)*Rr, y:cy+Math.sin(an)*Rr, an:an}); }
+
+  var state={src:0, tgt:19, result:null, hover:-1};
+
+  function draw(){
+    ctx.clearRect(0,0,CW,CH);
+    // faint web: ring-neighbour chords
+    ctx.lineWidth=1;
+    for(var i=0;i<N;i++){
+      var p=pos[i], q=pos[(i+1)%N];
+      ctx.strokeStyle='rgba(126,134,230,.10)';
+      ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.stroke();
+      // a few long chords for the "web" texture (deterministic)
+      var r=pos[(i+13)%N];
+      ctx.strokeStyle='rgba(126,134,230,.045)';
+      ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(r.x,r.y); ctx.stroke();
+    }
+    // spokes: every domain bound to the CORE
+    for(var s=0;s<N;s++){
+      ctx.strokeStyle='rgba(126,134,230,.13)'; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(pos[s].x,pos[s].y); ctx.stroke();
+    }
+    // active path source -> core -> target
+    var res=state.result;
+    if(res){
+      var col=res.ok? '#6fbf8a' : '#e0705a';
+      ctx.lineWidth=2.6; ctx.strokeStyle=col; ctx.shadowColor=col; ctx.shadowBlur=10;
+      ctx.beginPath(); ctx.moveTo(pos[state.src].x,pos[state.src].y); ctx.lineTo(cx,cy); ctx.lineTo(pos[state.tgt].x,pos[state.tgt].y); ctx.stroke();
+      ctx.shadowBlur=0;
+      // travelling pulse dot (position advances if animating; static midpoint otherwise)
+      var t=pulseT;
+      var px,py;
+      if(t<0.5){ var u=t/0.5; px=pos[state.src].x+(cx-pos[state.src].x)*u; py=pos[state.src].y+(cy-pos[state.src].y)*u; }
+      else { var u2=(t-0.5)/0.5; px=cx+(pos[state.tgt].x-cx)*u2; py=cy+(pos[state.tgt].y-cy)*u2; }
+      ctx.fillStyle=col; ctx.shadowColor=col; ctx.shadowBlur=12;
+      ctx.beginPath(); ctx.arc(px,py,4.5,0,7); ctx.fill(); ctx.shadowBlur=0;
+    }
+    // nodes
+    for(var n=0;n<N;n++){
+      var p=pos[n], isSrc=(n===state.src), isTgt=(n===state.tgt), isHov=(n===state.hover);
+      var big=isSrc||isTgt||isHov;
+      // halo for src/tgt
+      if(isSrc||isTgt){
+        var hc=isSrc? '#a3a9f0' : (res? (res.ok?'#6fbf8a':'#e0705a') : '#a3a9f0');
+        ctx.strokeStyle=hc; ctx.lineWidth=1.6; ctx.beginPath(); ctx.arc(p.x,p.y,nodeR+5,0,7); ctx.stroke();
+      }
+      ctx.fillStyle=D[n].a; ctx.shadowColor=D[n].a; ctx.shadowBlur=big?10:4;
+      ctx.beginPath(); ctx.arc(p.x,p.y,big?nodeR+1.5:nodeR,0,7); ctx.fill(); ctx.shadowBlur=0;
+      // label (radial). dim for all, bright for src/tgt/hover
+      var lab=D[n].k;
+      ctx.save(); ctx.translate(p.x,p.y);
+      var flip=(p.an>Math.PI/2||p.an<-Math.PI/2);
+      ctx.rotate(flip? p.an+Math.PI : p.an);
+      ctx.font=(big?'600 10px':'9px')+' "IBM Plex Mono",monospace';
+      ctx.textBaseline='middle'; ctx.textAlign=flip?'right':'left';
+      ctx.fillStyle= big? '#ece9f5' : 'rgba(180,178,208,.42)';
+      ctx.fillText(lab, flip? -(nodeR+7) : (nodeR+7), 0);
+      ctx.restore();
+    }
+    // CORE at centre
+    ctx.fillStyle='rgba(126,134,230,.14)'; ctx.beginPath(); ctx.arc(cx,cy,coreR+9,0,7); ctx.fill();
+    ctx.fillStyle='#150f28'; ctx.strokeStyle='#a3a9f0'; ctx.lineWidth=2.2;
+    ctx.beginPath(); ctx.arc(cx,cy,coreR,0,7); ctx.fill(); ctx.stroke();
+    ctx.strokeStyle='rgba(163,169,240,.4)'; ctx.lineWidth=1; ctx.beginPath(); ctx.arc(cx,cy,coreR-6,0,7); ctx.stroke();
+    ctx.fillStyle='#a3a9f0'; ctx.font='700 13px "IBM Plex Mono",monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('ACI', cx, cy-5); ctx.font='8px "IBM Plex Mono",monospace'; ctx.fillStyle='#8078a0';
+    ctx.fillText('CORE', cx, cy+8);
+    ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+  }
+
+  // ---------- pulse animation (degrades gracefully; final state drawn synchronously) ----------
+  var pulseT=0.5, raf=null;
+  function animate(){
+    pulseT=0;
+    if(raf) cancelAnimationFrame(raf);
+    var t0=null;
+    function step(ts){
+      if(t0===null) t0=ts;
+      pulseT=Math.min(1,(ts-t0)/900);
+      draw();
+      if(pulseT<1){ raf=requestAnimationFrame(step); } else { pulseT=1; draw(); }
+    }
+    if(typeof requestAnimationFrame==='function'){ raf=requestAnimationFrame(step); }
+    else { pulseT=1; draw(); }
+  }
+
+  // ---------- fire ----------
+  function esc(s){ return String(s).replace(/[&<>]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];}); }
+  function fire(){
+    var sD=D[state.src], tD=D[state.tgt];
+    var tamper=document.getElementById('tamper').checked;
+    var r=transit(sD,tD,tamper);
+    state.result=r;
+    animate();
+    // verdict
+    var vd=document.getElementById('verdict');
+    if(r.ok){ vd.className='verdict ok'; vd.innerHTML='◈ VERIFIED · '+esc(tD.t)+' re-derived the seal '+sD.t+' minted and got the <b>same hash</b>. The synapse fires — a claim sealed in one domain is provably the same claim in another. No trust required; the arithmetic matched.'; }
+    else { vd.className='verdict bad'; vd.innerHTML='✕ CAUGHT · the signal was altered in transit (one character), so '+esc(tD.t)+'’s re-derived seal <b>does not match</b> what '+sD.t+' minted. The standard refuses it. Tamper cannot pass as authentic — that is the whole point of the seal.'; }
+    // trace
+    var tr=document.getElementById('trace');
+    tr.innerHTML=
+      '<span class="k">source</span>  '+esc(sD.t)+'  ('+sD.k+')\n'+
+      '<span class="k">minted</span>  <span class="mon">'+esc(r.sig.moniker)+'</span>\n'+
+      '<span class="k">seal</span>    <span class="hash">'+r.sig.seal.slice(0,32)+'…</span>\n'+
+      (r.tamper? '<span class="r">tamper</span>  seal line altered in transit → …'+esc(r.recv.seal.slice(-34))+'\n' : '<span class="k">transit</span> clean · record unchanged\n')+
+      '<span class="k">target</span>  '+esc(tD.t)+'  ('+tD.k+') re-derives:\n'+
+      '<span class="k">re-hash</span> <span class="'+(r.ok?'hash':'r')+'">'+r.re.seal.slice(0,32)+'…</span>\n'+
+      '<span class="k">verify</span>  '+(r.ok? '<span class="g">MATCH ✓ — hex6 '+r.sig.hex6+' = '+r.re.hex6+'</span>' : '<span class="r">MISMATCH ✕ — hex6 '+r.sig.hex6+' ≠ '+r.re.hex6+'</span>');
+    tr.innerHTML=tr.innerHTML.replace(/\n/g,'<br>');
+  }
+
+  // ---------- wiring ----------
+  var srcSel=document.getElementById('src'), tgtSel=document.getElementById('tgt');
+  for(var i=0;i<N;i++){
+    var o1=document.createElement('option'); o1.value=i; o1.textContent=D[i].t+' ('+D[i].k+')'; srcSel.appendChild(o1);
+    var o2=document.createElement('option'); o2.value=i; o2.textContent=D[i].t+' ('+D[i].k+')'; tgtSel.appendChild(o2);
+  }
+  srcSel.value=state.src; tgtSel.value=state.tgt;
+  srcSel.onchange=function(){ state.src=+this.value; state.result=null; resetVerdict(); draw(); };
+  tgtSel.onchange=function(){ state.tgt=+this.value; state.result=null; resetVerdict(); draw(); };
+  document.getElementById('tamper').onchange=function(){
+    document.getElementById('tamperWrap').className='tamper'+(this.checked?' on':'');
+    if(state.result) fire();
+  };
+  document.getElementById('fire').onclick=fire;
+  document.getElementById('rnd').onclick=function(){
+    // deterministic-ish shuffle via time-free counter
+    rndc=(rndc*7+13)%N; var a=rndc; var b=(rndc*5+17)%N; if(b===a) b=(b+1)%N;
+    state.src=a; state.tgt=b; srcSel.value=a; tgtSel.value=b; fire();
+  };
+  var rndc=3;
+  function resetVerdict(){ var vd=document.getElementById('verdict'); vd.className='verdict idle';
+    vd.innerHTML='Pick a source and a target, then fire. The signal travels <b>source → ACI CORE → target</b>: the CORE is the shared standard every domain routes through.'; document.getElementById('trace').innerHTML=''; }
+
+  // canvas interaction: click / hover a node -> set src (click) / tgt (shift-click)
+  function nodeAt(mx,my){ for(var i=0;i<N;i++){ var dx=mx-pos[i].x, dy=my-pos[i].y; if(dx*dx+dy*dy<=(nodeR+7)*(nodeR+7)) return i; } return -1; }
+  function toCv(e){ var rct=cv.getBoundingClientRect(); return {x:(e.clientX-rct.left)*(CW/rct.width), y:(e.clientY-rct.top)*(CH/rct.height)}; }
+  cv.addEventListener('mousemove',function(e){ var m=toCv(e); var n=nodeAt(m.x,m.y); if(n!==state.hover){ state.hover=n; cv.style.cursor=n>=0?'pointer':'default'; draw(); } });
+  cv.addEventListener('mouseleave',function(){ if(state.hover!==-1){ state.hover=-1; draw(); } });
+  cv.addEventListener('click',function(e){ var m=toCv(e); var n=nodeAt(m.x,m.y); if(n<0) return;
+    if(e.shiftKey){ state.tgt=n; tgtSel.value=n; } else { state.src=n; srcSel.value=n; }
+    if(state.src!==state.tgt) fire(); });
+
+  draw();   // paint the web synchronously at load (no rAF dependency)
+  fire();   // show a first verified transit immediately
+})();
+</script>
+</body>
+</html>
